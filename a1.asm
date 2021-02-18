@@ -43,7 +43,7 @@ main:
 	li	$t7,0			# $t7 = 0 = area
 	mtc1	$t7,$f12		# t7 to f12   = area
 	cvt.s.w	$f12,$f12		#convert
-	
+	l.s	$f15,half
 loop:	
 	bne	$t1,1,done	# $t1!=1
 	
@@ -69,60 +69,70 @@ loop:
 	mtc1	$t6,$f6		# t6 to f6   = b
 	cvt.s.w	$f6,$f6		#convert
 
-	bne	$f5,$f2,unequal
-		blt	$f6,0.0,cond1	# (b<0)
-		blt	$f4,0.0,cond1	# $ (max<0)
+	bne	$t5,$t2,unequal
+		blt	$t6,0,cond1	# (b<0)
+		blt	$t4,0,cond1	# $ (max<0)
 		add.s	$f7,$f4,$f6	# ($f7 = b+max)
 		sub.s	$f9,$f5,$f2	# ($f9 = a-p)
 		mul.s	$f9,$f9,$f7	# ($f9 = $f9*$7)
-		muls.	$f9,$f9,0.5	# ($f9 = $f9*0.5)
+		mul.s	$f9,$f9,$f15	# ($f9 = $f9*0.5)
 		add.s	$f12,$f12,$f9	# (area  = area + $f9)
-		move	$f4,$f6	# max = b
+		mov.s	$f4,$f6	# max = b
 		j	next
 		cond1:
-			bgt $f6,0.0,cond2	#(b>0)
-			bgt $f4,0.0,cond2	#(max>0)
+			bgt $t6,0,cond2	#(b>0)
+			bgt $t4,0,cond2	#(max>0)
 			add.s	$f7,$f4,$f6	# ($f7 = b+max)
 			sub.s	$f9,$f5,$f2	# ($f9 = a-p)
 			mul.s	$f9,$f9,$f7	# ($f9 = $f9*$7)
-			muls.	$f9,$f9,0.5	# ($f9 = $f9*0.5)
+			mul.s	$f9,$f9,$f15	# ($f9 = $f9*0.5)
 			sub.s	$f12,$f12,$f9	# (area  = area - $f9)
-			move	$f4,$f6	# max = b
+			mov.s	$f4,$f6	# max = b
 			j	next
 			cond2:
-				bgt $f6,0.0,cond3	#(b>0)
-				blt	$f4,0.0,cond3	# $ (max<0)
+				bgt	$t6,0,cond3	#(b>0)
+				blt	$t4,0,cond3	# $ (max<0)
 				sub.s	$f7,$f4,$f6	# ($f7 = max-b)
 				sub.s	$f9,$f5,$f2	# ($f9 = a-p)
 				mul.s	$f10,$f6,$f6	# ($f6 = max sq)
 				mul.s	$f11,$f4,$f4	# ($f4 = b*b)
-				add.s	$f12,$12,$f11	# (area = area+$f11)
-				move	$f4,$f6	# max = b
+				add.s	$f11,$f11,$f10
+				mul.s	$f11,$f11,$f9
+				div.s	$f11,$f11,$f7
+				mul.s	$f11,$f11,$f15
+				add.s	$f12,$f12,$f11	# (area = area+$f11)
+				mov.s	$f4,$f6	# max = b
 				j	next
 				cond3:
 					sub.s	$f7,$f4,$f6	# ($f7 = max-b)
 					sub.s	$f9,$f5,$f2	# ($f9 = a-p)
 					mul.s	$f10,$f6,$f6	# ($f6 = max sq)
 					mul.s	$f11,$f4,$f4	# ($f4 = b*b)
-					sub.s	$f12,$12,$f11	# (area = area-$f11)
-					move	$f4,$f6	# max = b
+					add.s	$f11,$f11,$f10
+					mul.s	$f11,$f11,$f9
+					div.s	$f11,$f11,$f7
+					mul.s	$f11,$f11,$f15
+					sub.s	$f12,$f12,$f11	# (area = area-$f11)
+					mov.s	$f4,$f6	# max = b
 					j	next
 		j	next
 	unequal:
-		blt	$f4,0.0,cond4	# $ (max<0)
-		bgt	$f4,$f6,cond4	# $ (max>b)
-		move	$f4,$f6	# max = b
+		blt	$t4,0,cond4	# $ (max<0)
+		bgt	$t4,$t6,cond4	# $ (max>b)
+		mov.s	$f4,$f6	# max = b
 		j	next
 		cond4:
-			bgt	$f4,0.0,cond4	# $ (max<0)
-			blt	$f4,$f6,cond4	# $ (max>b)
-			move	$f4,$f6	# max = b
+			bgt	$t4,0,cond5	# $ (max<0)
+			blt	$t4,$t6,cond5	# $ (max>b)
+			mov.s	$f4,$f6	# max = b
+			j	next
+		cond5:
 			j	next
 	next:
 		
-		move	$f2,$f5	#(p = a)
-		move	$f3,$f6	#(q = b)
-		subi	$t1,$t1,1	# $t1 = $t1-1
+		mov.s	$f2,$f5	#(p = a)
+		mov.s	$f3,$f6	#(q = b)
+		addi	$t1,$t1,-1
 		j	loop
 	done:
 	
@@ -132,3 +142,4 @@ loop:
 msg1:	.asciiz	"n: "
 msg2:	.asciiz	"X coordinate"
 msg3:	.asciiz	"Y coordinates"
+half:	.float		0.5
