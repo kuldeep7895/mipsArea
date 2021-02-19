@@ -41,11 +41,27 @@ main:
 	cvt.s.w	$f4,$f4		#convert 
 	
 	li	$t7,0			# $t7 = 0 = area
-	mtc1	$t7,$f12		# t7 to f12   = area
-	cvt.s.w	$f12,$f12		#convert
+	mtc1	$t7,$f13		# t7 to f13   = area
+	cvt.s.w	$f13,$f13		#convert
 	l.s	$f15,half
 loop:	
-	bne	$t1,1,done	# $t1!=1
+	li	$v0,2
+	mov.s	$f12,$f13
+	syscall
+	
+	li	$v0,4	# print break
+	la	$a0,msg4
+	syscall
+	
+	li	$v0,1
+	move	$a0,$t4
+	syscall
+	
+	li	$v0,4	# print break
+	la	$a0,msg4
+	syscall
+	
+	beq	$t1,1,done	# $t1!=1
 	
 	li	$v0,4	# print X coordinate
 	la	$a0,msg2
@@ -69,15 +85,16 @@ loop:
 	mtc1	$t6,$f6		# t6 to f6   = b
 	cvt.s.w	$f6,$f6		#convert
 
-	bne	$t5,$t2,unequal
+	beq	$t5,$t2,unequal
 		blt	$t6,0,cond1	# (b<0)
 		blt	$t4,0,cond1	# $ (max<0)
 		add.s	$f7,$f4,$f6	# ($f7 = b+max)
 		sub.s	$f9,$f5,$f2	# ($f9 = a-p)
 		mul.s	$f9,$f9,$f7	# ($f9 = $f9*$7)
 		mul.s	$f9,$f9,$f15	# ($f9 = $f9*0.5)
-		add.s	$f12,$f12,$f9	# (area  = area + $f9)
+		add.s	$f13,$f13,$f9	# (area  = area + $f9)
 		mov.s	$f4,$f6	# max = b
+		move	$t4,$t6
 		j	next
 		cond1:
 			bgt $t6,0,cond2	#(b>0)
@@ -86,8 +103,9 @@ loop:
 			sub.s	$f9,$f5,$f2	# ($f9 = a-p)
 			mul.s	$f9,$f9,$f7	# ($f9 = $f9*$7)
 			mul.s	$f9,$f9,$f15	# ($f9 = $f9*0.5)
-			sub.s	$f12,$f12,$f9	# (area  = area - $f9)
+			sub.s	$f13,$f13,$f9	# (area  = area - $f9)
 			mov.s	$f4,$f6	# max = b
+			move	$t4,$t6
 			j	next
 			cond2:
 				bgt	$t6,0,cond3	#(b>0)
@@ -100,8 +118,9 @@ loop:
 				mul.s	$f11,$f11,$f9
 				div.s	$f11,$f11,$f7
 				mul.s	$f11,$f11,$f15
-				add.s	$f12,$f12,$f11	# (area = area+$f11)
+				add.s	$f13,$f13,$f11	# (area = area+$f11)
 				mov.s	$f4,$f6	# max = b
+				move	$t4,$t6
 				j	next
 				cond3:
 					sub.s	$f7,$f4,$f6	# ($f7 = max-b)
@@ -112,19 +131,22 @@ loop:
 					mul.s	$f11,$f11,$f9
 					div.s	$f11,$f11,$f7
 					mul.s	$f11,$f11,$f15
-					sub.s	$f12,$f12,$f11	# (area = area-$f11)
+					sub.s	$f13,$f13,$f11	# (area = area-$f11)
 					mov.s	$f4,$f6	# max = b
+					move	$t4,$t6
 					j	next
 		j	next
 	unequal:
 		blt	$t4,0,cond4	# $ (max<0)
 		bgt	$t4,$t6,cond4	# $ (max>b)
 		mov.s	$f4,$f6	# max = b
+		move	$t4,$t6
 		j	next
 		cond4:
 			bgt	$t4,0,cond5	# $ (max<0)
 			blt	$t4,$t6,cond5	# $ (max>b)
 			mov.s	$f4,$f6	# max = b
+			move	$t4,$t6
 			j	next
 		cond5:
 			j	next
@@ -142,4 +164,5 @@ loop:
 msg1:	.asciiz	"n: "
 msg2:	.asciiz	"X coordinate"
 msg3:	.asciiz	"Y coordinates"
+msg4:	.asciiz	"\n"
 half:	.float		0.5
