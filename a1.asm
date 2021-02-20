@@ -86,9 +86,9 @@ loop:
 	mtc1	$t6,$f6					# t6 to f6   = b
 	cvt.s.w	$f6,$f6				#convert
 
-	beq	$t5,$t2,unequal				if(a!=p)
+	beq	$t5,$t2,unequal				#if(a!=p)
 		blt	$t6,0,cond1	# (b<0)		
-		blt	$t4,0,cond1	# $ (max<0)		if(max>=0 and b>=0)
+		blt	$t4,0,cond1	# $ (max<0)		#if(max>=0 and b>=0)
 		add.s	$f7,$f4,$f6	# ($f7 = max+b)	
 		sub.s	$f9,$f5,$f2	# ($f9 = a-p)
 		mul.s	$f9,$f9,$f7	# ($f9 = $f9*$7)
@@ -163,7 +163,6 @@ loop:
 	syscall
 	.data
 msg1:	.asciiz	"n: "
-msg2:	.asciiz	"X coordinate "
 msg2:	.asciiz	"X coordinate "
 msg3:	.asciiz	"Y coordinates"
 msg4:	.asciiz	"\n"
