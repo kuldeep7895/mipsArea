@@ -26,9 +26,6 @@ main:
 	move	$t3,$v0		# $t3 = v0 = q;
 
 	move 	$t4, $t3		# $t4 = $t3 = max
- 	
-#	mtc1	$t1,$f1		# t1 to f1   =  n
-#	cvt.s.w	$f1,$f1		#convert
 
 	mtc1	$t2,$f2		# t2 to f2    = p
 	cvt.s.w	$f2,$f2		#convert
@@ -42,6 +39,8 @@ main:
 	li	$t7,0			# $t7 = 0 = area
 	mtc1	$t7,$f13		# t7 to f13   = area
 	cvt.s.w	$f13,$f13		#convert
+	
+	
 	
 	l.s	$f15,half
 	
@@ -138,6 +137,7 @@ loop:
 					j	next
 		j	next
 	unequal:									# if(a = p)
+		
 		blt	$t4,0,cond4	# $ (max<0)					
 		bgt	$t4,$t6,cond4	# $ (max>b)					if(max<=b and max >= 0)
 		mov.s	$f4,$f6							# max = b
@@ -155,6 +155,8 @@ loop:
 		
 		mov.s	$f2,$f5	#(p = a)
 		mov.s	$f3,$f6	#(q = b)
+		move	$t2,$t5
+		move	$t3,$t6
 		addi	$t1,$t1,-1
 		j	loop
 	done:
@@ -167,3 +169,4 @@ msg2:	.asciiz	"X coordinate "
 msg3:	.asciiz	"Y coordinates"
 msg4:	.asciiz	"\n"
 half:	.float		0.5
+

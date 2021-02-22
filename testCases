@@ -1,0 +1,13 @@
+Test Case (All Positives):
+(-8,10),(-4,10),(-4,8),(-4,12),(6,9),(8,0)
+Area = 154
+Test Case (All Negatives):
+(-8,-10),(-4,-10),(-4,-8),(-4,-12),(6,-9),(8,0)
+Area = 154
+Test Case (Positive to Negative):
+(-8,5),(-4,4),(-2,9),(1,-18),(3,0)
+Area = 71.5
+Test Case (Zig Zag):
+(-6,3),(-2,-9),(-1,-5),(3,15),(4,-5)
+Area = 53.25
+
