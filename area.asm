@@ -180,7 +180,7 @@ loop:
 		move	$t4,$t6
 		j	next
 		cond4:
-			bgt	$t4,0,cond5	# $ (max<0)
+			bge	$t4,0,cond5	# $ (max<0)
 			blt	$t4,$t6,cond5	# $ (max>b)
 			mov.s	$f4,$f6	# max = b
 			move	$t4,$t6
