@@ -77,6 +77,14 @@ loop:
 	la	$a0,msg4
 	syscall
 	
+	li	$v0,1			# print min
+	move	$a0,$s3
+	syscall
+	
+	li	$v0,4			# print break
+	la	$a0,msg4
+	syscall
+	
 	beq	$t1,1,done	# $t1!=1			# while n!=1
 	
 	li	$v0,4						# print X coordinate	
@@ -227,7 +235,7 @@ loop:
 							j	next
 				j	next
 				cond6:
-					bgt	$s3,0,cond7		
+					bge	$s3,0,cond7		
 					bgt	$s3,$t6,cond7		# if(min<=0 and min <= b)
 					move	$s3,$t6
 					mov.s	$f18,$f6
