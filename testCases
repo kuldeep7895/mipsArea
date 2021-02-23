@@ -1,11 +1,11 @@
 1. Test Case (All Positives):
 n=6
 (-8,10),(-4,10),(-4,8),(-4,12),(6,9),(8,0)
-Area = 154
+Area = 150
 2. Test Case (All Negatives):
 n=6
 (-8,-10),(-4,-10),(-4,-8),(-4,-12),(6,-9),(8,0)
-Area = 154
+Area = 150
 3 .Test Case (Positive to Negative):
 n=5
 (-8,5),(-4,4),(-2,9),(1,-18),(3,0)
